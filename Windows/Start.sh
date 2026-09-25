@@ -14,6 +14,7 @@ export DEPS_ROOT=$(pwd)/deps
 
 cmake ../ \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DRUN_IN_PLACE=TRUE \
 	-DENABLE_SQLITE=1 \
 	-DENABLE_POSTGRESQL=0 \
 	-DENABLE_LEVELDB=0 \

@@ -33,7 +33,7 @@ jobs:
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DRUN_IN_PLACE=TRUE \
-            -DBUILD_SERVER=FALSE
+            -DBUILD_SERVER=FALSE \
             -DENABLE_SOUND=0
 
       - name: Build

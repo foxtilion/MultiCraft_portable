@@ -1,0 +1,41 @@
+name: MultiCraft WebAssembly Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  wasm-test:
+    name: "WebAssembly Build Test"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build python3
+
+      - name: Install Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: latest
+          actions-cache-folder: emsdk-cache
+
+      - name: Check Emscripten
+        run: |
+          emcc --version
+          emcmake --version
+
+      - name: Configure
+        run: |
+          emcmake cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DRUN_IN_PLACE=TRUE \
+            -DBUILD_SERVER=FALSE
+
+      - name: Build
+        run: |
+          cmake --build build --parallel

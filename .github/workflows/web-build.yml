@@ -26,7 +26,6 @@ jobs:
       - name: Check Emscripten
         run: |
           emcc --version
-          emcmake --help
 
       - name: Configure
         run: |

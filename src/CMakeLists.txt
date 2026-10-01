@@ -356,18 +356,18 @@ else()
 	if(BUILD_CLIENT)
 		if(NOT HAIKU AND NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 			find_package(X11 REQUIRED)
-		endif(NOT HAIKU AND NOT APPLE)
+		endif(NOT HAIKU AND NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 
 		##
 		# The following dependencies are transitive dependencies from Irrlicht.
 		# Minetest itself does not use them, but we link them so that statically
 		# linking Irrlicht works.
-		if(NOT HAIKU AND NOT APPLE)
-			# This way Xxf86vm is found on OpenBSD too
-			find_library(XXF86VM_LIBRARY Xxf86vm)
-			mark_as_advanced(XXF86VM_LIBRARY)
-			set(CLIENT_PLATFORM_LIBS ${CLIENT_PLATFORM_LIBS} ${XXF86VM_LIBRARY})
-		endif(NOT HAIKU AND NOT APPLE)
+		if(NOT HAIKU AND NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+		    # This way Xxf86vm is found...
+		    find_library(XXF86VM_LIBRARY Xxf86vm)
+		    mark_as_advanced(XXF86VM_LIBRARY)
+		    set(CLIENT_PLATFORM_LIBS ${CLIENT_PLATFORM_LIBS} ${XXF86VM_LIBRARY})
+		endif(NOT HAIKU AND NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 
 		find_package(JPEG REQUIRED)
 		find_package(BZip2 REQUIRED)

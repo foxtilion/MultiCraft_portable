@@ -116,6 +116,29 @@ jobs:
           cp -a libpng-src/*.h libpng/include/
           cp libpng-src/build/libpng18.a libpng/lib/
 
+      - name: Build Zstd for WebAssembly
+        run: |
+          git clone --depth 1 https://github.com/facebook/zstd.git zstd-src
+          mkdir zstd-src/build
+          cd zstd-src/build
+
+          emcmake cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZSTD_BUILD_PROGRAMS=OFF \
+            -DZSTD_BUILD_TESTS=OFF \
+            -DZSTD_BUILD_CONTRIB=OFF \
+            -DZSTD_BUILD_STATIC=ON \
+            -DZSTD_BUILD_SHARED=OFF
+
+          emmake cmake --build . --parallel
+
+          cd ../..
+          mkdir -p zstd/include zstd/lib
+
+          cp -a zstd-src/lib/zstd.h zstd/include/
+          cp -a zstd-src/lib/zdict.h zstd/include/
+          cp -a zstd-src/lib/zstd_errors.h zstd/include/
+          cp zstd-src/build/lib/libzstd.a zstd/lib/
 
       - name: Configure
         run: |
@@ -134,7 +157,9 @@ jobs:
             -DZLIB_LIBRARY="$GITHUB_WORKSPACE/zlib/lib/libz.a" \
             -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include" \
             -DPNG_LIBRARY="$GITHUB_WORKSPACE/libpng/lib/libpng18.a" \
-            -DPNG_PNG_INCLUDE_DIR="$GITHUB_WORKSPACE/libpng/include"
+            -DPNG_PNG_INCLUDE_DIR="$GITHUB_WORKSPACE/libpng/include" \
+            -DZSTD_LIBRARY="$GITHUB_WORKSPACE/zstd/lib/libzstd.a" \
+            -DZSTD_INCLUDE_DIR="$GITHUB_WORKSPACE/zstd/include"
 
       - name: Build
         run: |

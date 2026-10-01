@@ -39,7 +39,7 @@ jobs:
           mkdir -p sqlite/include sqlite/lib
           cp sqlite-src/sqlite3.h sqlite/include/
           cp sqlite-src/sqlite3ext.h sqlite/include/
-          cp sqlite-src/.libs/libsqlite3.a sqlite/lib/
+          cp sqlite-src/libsqlite3.a sqlite/lib/
 
       - name: Configure
         run: |

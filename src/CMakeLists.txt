@@ -354,7 +354,7 @@ if(WIN32)
 else()
 	# Unix probably
 	if(BUILD_CLIENT)
-		if(NOT HAIKU AND NOT APPLE)
+		if(NOT HAIKU AND NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 			find_package(X11 REQUIRED)
 		endif(NOT HAIKU AND NOT APPLE)
 

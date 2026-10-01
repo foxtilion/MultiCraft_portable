@@ -26,20 +26,25 @@ jobs:
       - name: Check Emscripten
         run: |
           emcc --version
-          
+
       - name: Build SQLite for WebAssembly
         run: |
           git clone -b version-3.51.1 --depth 1 https://github.com/sqlite/sqlite.git sqlite-src
           cd sqlite-src
+
           emconfigure ./configure \
             --enable-static \
             --disable-shared
+
           emmake make -j$(nproc)
+
           cd ..
           mkdir -p sqlite/include sqlite/lib
+
           cp sqlite-src/sqlite3.h sqlite/include/
           cp sqlite-src/sqlite3ext.h sqlite/include/
           cp sqlite-src/libsqlite3.a sqlite/lib/
+
       - name: Build libjpeg for WebAssembly
         run: |
           git clone -b 3.1.3 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo libjpeg-src
@@ -54,9 +59,25 @@ jobs:
 
           cd ../..
           mkdir -p libjpeg/include libjpeg/lib
+
           cp -a libjpeg-src/src/*.h libjpeg/include/
           cp -a libjpeg-src/build/*.h libjpeg/include/
           cp libjpeg-src/build/libjpeg.a libjpeg/lib/
+
+      - name: Build BZip2 for WebAssembly
+        run: |
+          git clone --depth 1 https://sourceware.org/git/bzip2.git bzip2-src
+          cd bzip2-src
+
+          emmake make clean || true
+          emmake make -j$(nproc)
+
+          cd ..
+          mkdir -p bzip2/include bzip2/lib
+
+          cp bzip2-src/bzlib.h bzip2/include/
+          cp bzip2-src/libbz2.a bzip2/lib/
+
       - name: Configure
         run: |
           emcmake cmake -S . -B build \
@@ -68,7 +89,9 @@ jobs:
             -DSQLITE3_LIBRARY="$GITHUB_WORKSPACE/sqlite/lib/libsqlite3.a" \
             -DSQLITE3_INCLUDE_DIR="$GITHUB_WORKSPACE/sqlite/include" \
             -DJPEG_LIBRARY="$GITHUB_WORKSPACE/libjpeg/lib/libjpeg.a" \
-            -DJPEG_INCLUDE_DIR="$GITHUB_WORKSPACE/libjpeg/include"
+            -DJPEG_INCLUDE_DIR="$GITHUB_WORKSPACE/libjpeg/include" \
+            -DBZIP2_LIBRARIES="$GITHUB_WORKSPACE/bzip2/lib/libbz2.a" \
+            -DBZIP2_INCLUDE_DIR="$GITHUB_WORKSPACE/bzip2/include"
 
       - name: Build
         run: |

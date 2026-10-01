@@ -95,7 +95,6 @@ jobs:
           cp zlib-src/zlib.h zlib/include/
           cp zlib-src/zconf.h zlib/include/
           cp zlib-src/libz.a zlib/lib/
-
       - name: Build libpng for WebAssembly
         run: |
           git clone --depth 1 https://github.com/pnggroup/libpng.git libpng-src
@@ -105,7 +104,9 @@ jobs:
           emcmake cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
             -DPNG_SHARED=OFF \
-            -DPNG_TESTS=OFF
+            -DPNG_TESTS=OFF \
+            -DZLIB_LIBRARY="$GITHUB_WORKSPACE/zlib/lib/libz.a" \
+            -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include"
 
           emmake cmake --build . --parallel
 

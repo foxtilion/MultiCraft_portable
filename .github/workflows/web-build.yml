@@ -119,7 +119,7 @@ jobs:
       - name: Build Zstd for WebAssembly
         run: |
           git clone --depth 1 https://github.com/facebook/zstd.git zstd-src
-          mkdir zstd-src/build
+          mkdir -p zstd-src/build
           cd zstd-src/build
 
           emcmake cmake .. \

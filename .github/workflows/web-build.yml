@@ -78,6 +78,44 @@ jobs:
           cp bzip2-src/bzlib.h bzip2/include/
           cp bzip2-src/libbz2.a bzip2/lib/
 
+      - name: Build Zlib for WebAssembly
+        run: |
+          git clone --depth 1 https://github.com/madler/zlib.git zlib-src
+          cd zlib-src
+
+          emcmake cmake . \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF
+
+          emmake cmake --build . --parallel
+
+          cd ..
+          mkdir -p zlib/include zlib/lib
+
+          cp zlib-src/zlib.h zlib/include/
+          cp zlib-src/zconf.h zlib/include/
+          cp zlib-src/libz.a zlib/lib/
+
+      - name: Build libpng for WebAssembly
+        run: |
+          git clone --depth 1 https://github.com/pnggroup/libpng.git libpng-src
+          mkdir libpng-src/build
+          cd libpng-src/build
+
+          emcmake cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPNG_SHARED=OFF \
+            -DPNG_TESTS=OFF
+
+          emmake cmake --build . --parallel
+
+          cd ../..
+          mkdir -p libpng/include libpng/lib
+
+          cp -a libpng-src/*.h libpng/include/
+          cp libpng-src/build/libpng16.a libpng/lib/
+
+
       - name: Configure
         run: |
           emcmake cmake -S . -B build \
@@ -91,7 +129,11 @@ jobs:
             -DJPEG_LIBRARY="$GITHUB_WORKSPACE/libjpeg/lib/libjpeg.a" \
             -DJPEG_INCLUDE_DIR="$GITHUB_WORKSPACE/libjpeg/include" \
             -DBZIP2_LIBRARIES="$GITHUB_WORKSPACE/bzip2/lib/libbz2.a" \
-            -DBZIP2_INCLUDE_DIR="$GITHUB_WORKSPACE/bzip2/include"
+            -DBZIP2_INCLUDE_DIR="$GITHUB_WORKSPACE/bzip2/include" \
+            -DZLIB_LIBRARY="$GITHUB_WORKSPACE/zlib/lib/libz.a" \
+            -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include" \
+            -DPNG_LIBRARY="$GITHUB_WORKSPACE/libpng/lib/libpng16.a" \
+            -DPNG_PNG_INCLUDE_DIR="$GITHUB_WORKSPACE/libpng/include"
 
       - name: Build
         run: |

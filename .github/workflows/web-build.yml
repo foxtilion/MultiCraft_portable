@@ -26,6 +26,20 @@ jobs:
       - name: Check Emscripten
         run: |
           emcc --version
+          
+      - name: Build SQLite for WebAssembly
+        run: |
+          git clone -b version-3.51.1 --depth 1 https://github.com/sqlite/sqlite.git sqlite-src
+          cd sqlite-src
+          emconfigure ./configure \
+            --enable-static \
+            --disable-shared
+          emmake make -j$(nproc)
+          cd ..
+          mkdir -p sqlite/include sqlite/lib
+          cp sqlite-src/sqlite3.h sqlite/include/
+          cp sqlite-src/sqlite3ext.h sqlite/include/
+          cp sqlite-src/.libs/libsqlite3.a sqlite/lib/
 
       - name: Configure
         run: |

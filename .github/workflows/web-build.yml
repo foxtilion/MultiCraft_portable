@@ -140,14 +140,19 @@ jobs:
       - name: Build Irrlicht for WebAssembly
         run: |
           git clone --depth 1 https://github.com/minetest/irrlicht.git irrlicht-src
-          cd irrlicht-src
 
-          mkdir build
-          cd build
+          echo "Checking Zlib:"
+          ls -l "$GITHUB_WORKSPACE/zlib/lib/libz.a"
+          ls -l "$GITHUB_WORKSPACE/zlib/include/zlib.h"
+
+          mkdir irrlicht-src/build
+          cd irrlicht-src/build
 
           emcmake cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF
+            -DBUILD_SHARED_LIBS=OFF \
+            -DZLIB_LIBRARY="$GITHUB_WORKSPACE/zlib/lib/libz.a" \
+            -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include"
 
           emmake cmake --build . --parallel
 

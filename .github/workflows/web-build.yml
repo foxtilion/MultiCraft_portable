@@ -135,6 +135,25 @@ jobs:
           cp zstd-src/lib/zstd_errors.h zstd/include/
           cp zstd-src/lib/libzstd.a zstd/lib/
 
+      - name: Build Irrlicht for WebAssembly
+        run: |
+          git clone --depth 1 https://github.com/minetest/irrlicht.git irrlicht-src
+          cd irrlicht-src
+
+          mkdir build
+          cd build
+
+          emcmake cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF
+
+          emmake cmake --build . --parallel
+
+          cd ../..
+          mkdir -p irrlicht/include irrlicht/lib
+
+          cp -a irrlicht-src/include/* irrlicht/include/
+          cp irrlicht-src/build/libIrrlicht.a irrlicht/lib/
 
       - name: Configure
         run: |

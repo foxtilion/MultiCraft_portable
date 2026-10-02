@@ -124,6 +124,8 @@ jobs:
 
           emcmake cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=emcc \
+            -DCMAKE_CXX_COMPILER=em++ \
             -DZSTD_BUILD_PROGRAMS=OFF \
             -DZSTD_BUILD_TESTS=OFF \
             -DZSTD_BUILD_CONTRIB=OFF \
@@ -139,6 +141,7 @@ jobs:
           cp -a zstd-src/lib/zdict.h zstd/include/
           cp -a zstd-src/lib/zstd_errors.h zstd/include/
           cp zstd-src/build/lib/libzstd.a zstd/lib/
+
 
       - name: Configure
         run: |

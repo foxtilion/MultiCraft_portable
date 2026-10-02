@@ -119,28 +119,21 @@ jobs:
       - name: Build Zstd for WebAssembly
         run: |
           git clone --depth 1 https://github.com/facebook/zstd.git zstd-src
-          mkdir -p zstd-src/build
-          cd zstd-src/build
+          cd zstd-src
 
-          emcmake cmake .. \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_C_COMPILER=emcc \
-            -DCMAKE_CXX_COMPILER=em++ \
-            -DZSTD_BUILD_PROGRAMS=OFF \
-            -DZSTD_BUILD_TESTS=OFF \
-            -DZSTD_BUILD_CONTRIB=OFF \
-            -DZSTD_BUILD_STATIC=ON \
-            -DZSTD_BUILD_SHARED=OFF
+          emmake make -C lib \
+            CC=emcc \
+            AR=emar \
+            RANLIB=emranlib \
+            -j$(nproc)
 
-          emmake cmake --build . --parallel
-
-          cd ../..
+          cd ..
           mkdir -p zstd/include zstd/lib
 
-          cp -a zstd-src/lib/zstd.h zstd/include/
-          cp -a zstd-src/lib/zdict.h zstd/include/
-          cp -a zstd-src/lib/zstd_errors.h zstd/include/
-          cp zstd-src/build/lib/libzstd.a zstd/lib/
+          cp zstd-src/lib/zstd.h zstd/include/
+          cp zstd-src/lib/zdict.h zstd/include/
+          cp zstd-src/lib/zstd_errors.h zstd/include/
+          cp zstd-src/lib/libzstd.a zstd/lib/
 
 
       - name: Configure

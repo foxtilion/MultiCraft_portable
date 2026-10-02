@@ -141,9 +141,11 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/minetest/irrlicht.git irrlicht-src
 
-          echo "Checking Zlib:"
+          echo "Checking dependencies:"
           ls -l "$GITHUB_WORKSPACE/zlib/lib/libz.a"
           ls -l "$GITHUB_WORKSPACE/zlib/include/zlib.h"
+          ls -l "$GITHUB_WORKSPACE/libjpeg/lib/libjpeg.a"
+          ls -l "$GITHUB_WORKSPACE/libjpeg/include/jpeglib.h"
 
           mkdir irrlicht-src/build
           cd irrlicht-src/build
@@ -152,7 +154,9 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DZLIB_LIBRARY="$GITHUB_WORKSPACE/zlib/lib/libz.a" \
-            -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include"
+            -DZLIB_INCLUDE_DIR="$GITHUB_WORKSPACE/zlib/include" \
+            -DJPEG_LIBRARY="$GITHUB_WORKSPACE/libjpeg/lib/libjpeg.a" \
+            -DJPEG_INCLUDE_DIR="$GITHUB_WORKSPACE/libjpeg/include"
 
           emmake cmake --build . --parallel
 
